@@ -25,6 +25,16 @@ const MemberLogin = () => {
         if (res.ok) {
           const json = await res.json();
           const found = json.user;
+
+          // Persist full profile returned by backend so UI can consume it
+          try {
+            localStorage.setItem('userProfile', JSON.stringify(found));
+            // keep registrationData key for compatibility where backend sends the same shape
+            localStorage.setItem('registrationData', JSON.stringify(found));
+          } catch (e) {
+            // ignore storage errors
+          }
+
           localStorage.setItem('userName', found.firstName || found.email || found.memberId);
           localStorage.setItem('memberId', found.memberId);
           localStorage.setItem('isLoggedIn', 'true');
@@ -51,6 +61,31 @@ const MemberLogin = () => {
       if (found.password !== data.password) {
         toast.error("Invalid credentials");
         return;
+      }
+
+      // Persist any available profile data to `userProfile` / `registrationData`
+      try {
+        // if there is a detailed registrationData stored and it belongs to this member, use that
+        const regJson = localStorage.getItem('registrationData');
+        if (regJson) {
+          try {
+            const reg = JSON.parse(regJson);
+            if (reg.memberId === found.memberId) {
+              localStorage.setItem('userProfile', JSON.stringify(reg));
+            } else {
+              localStorage.setItem('userProfile', JSON.stringify(found));
+            }
+          } catch (e) {
+            localStorage.setItem('userProfile', JSON.stringify(found));
+          }
+        } else {
+          localStorage.setItem('userProfile', JSON.stringify(found));
+        }
+
+        // Also keep a registrationData key (compatibility)
+        localStorage.setItem('registrationData', JSON.stringify(found));
+      } catch (e) {
+        // ignore
       }
 
       // Set logged-in session info

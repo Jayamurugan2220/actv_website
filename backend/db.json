@@ -15,6 +15,14 @@
       "email": "test+ci@example.com",
       "firstName": "CI",
       "createdAt": "2025-12-02T11:13:32.389Z"
+    },
+    {
+      "id": "FudVG9kB0CplanFCOaZXD",
+      "memberId": "Tamilarasan",
+      "password": "$2b$10$TejNO3F.swXGR.rjXi9IyuJWdCt7LhtBAk8wZFfyWTALljdBLMb/S",
+      "email": "tamilarasan@gmail.com",
+      "firstName": "Tamilarasan",
+      "createdAt": "2025-12-02T13:32:19.356Z"
     }
   ]
 }

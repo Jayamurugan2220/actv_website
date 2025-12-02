@@ -17,6 +17,9 @@ import Notifications from "./pages/member/Notifications";
 import ADFForm from "./pages/member/ADF";
 import MemberCertificate from "./pages/member/Certificate";
 import MemberProfile from "./pages/member/Profile";
+import ApplicationSubmitted from "./pages/member/ApplicationSubmitted";
+import ApplicationStatus from "./pages/member/ApplicationStatus";
+import PaymentPage from "./pages/member/Payment";
 import MemberHelp from "./pages/member/Help";
 import MemberEvents from "./pages/member/Events";
 import AdminDashboard from "./pages/admin/Dashboard";
@@ -52,6 +55,9 @@ const App = () => (
             <Route path="/member/adf" element={<ADFForm />} />
             <Route path="/member/certificate" element={<MemberCertificate />} />
             <Route path="/member/profile" element={<MemberProfile />} />
+            <Route path="/member/application-submitted" element={<ApplicationSubmitted />} />
+            <Route path="/member/application-status" element={<ApplicationStatus />} />
+            <Route path="/member/payment" element={<PaymentPage />} />
             <Route path="/member/help" element={<MemberHelp />} />
             <Route path="/member/events" element={<MemberEvents />} />
           

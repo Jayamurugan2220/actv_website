@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { FaHome, FaSearch, FaBell, FaUser, FaClipboardList, FaCertificate, FaQuestionCircle, FaCalendarAlt, FaSignOutAlt } from 'react-icons/fa';
+import { FaHome, FaSearch, FaBell, FaUser, FaSignOutAlt } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
 
 type Props = {
@@ -26,10 +26,7 @@ export default function Sidebar({ className = '' }: Props) {
     { to: '/explore', label: 'Explore', icon: <FaSearch /> },
     { to: '/notifications', label: 'Notifications', icon: <FaBell /> },
     { to: '/member/profile', label: 'My Profile', icon: <FaUser /> },
-    { to: '/member/adf', label: 'ADF Form', icon: <FaClipboardList /> },
-    { to: '/member/certificate', label: 'Certificate', icon: <FaCertificate /> },
-    { to: '/member/help', label: 'Help', icon: <FaQuestionCircle /> },
-    { to: '/member/events', label: 'Upcoming Events', icon: <FaCalendarAlt /> },
+    // Removed ADF Form, Certificate, Help Center, Events
   ];
 
     const handleLogout = () => {

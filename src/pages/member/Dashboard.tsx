@@ -32,28 +32,70 @@ const MemberDashboard = () => {
   }, []);
 
   const computeProfileCompletion = (): number => {
-    // Load profile from either userProfile or registrationData
-    const raw = localStorage.getItem("userProfile") || localStorage.getItem("registrationData");
-    if (!raw) return 0;
+    // Combine the base profile and the additional user details (saved separately)
+    const rawMain = localStorage.getItem("userProfile") || localStorage.getItem("registrationData");
+    const rawExtra = localStorage.getItem("userProfileDetails");
+
+    if (!rawMain && !rawExtra) return 0;
+
+    let main = {} as Record<string, any>;
+    let extra = {} as Record<string, any>;
+
     try {
-      const p = JSON.parse(raw);
-      const fields = [
-        p.firstName,
-        p.lastName,
-        p.email,
-        p.phone,
-        p.dateOfBirth,
-        p.gender,
-        p.state,
-        p.district,
-        p.block,
-        p.address,
-      ];
-      const filled = fields.filter((f: any) => !!f && `${f}`.trim() !== "").length;
-      return Math.round((filled / fields.length) * 100) || 0;
+      if (rawMain) main = JSON.parse(rawMain);
     } catch (e) {
-      return 0;
+      main = {} as any;
     }
+
+    try {
+      if (rawExtra) extra = JSON.parse(rawExtra);
+    } catch (e) {
+      extra = {} as any;
+    }
+
+    // Fields to consider for completion percentage
+    const fields = [
+      main.firstName,
+      main.lastName,
+      main.email,
+      main.phone,
+      main.dateOfBirth,
+      main.gender,
+      main.state,
+      main.district,
+      main.block,
+      main.address,
+
+      // extra details
+      extra.aadhaar,
+      extra.street,
+      extra.education,
+      extra.religion,
+      extra.socialCategory,
+
+      extra.organization,
+      extra.constitution,
+      (extra.businessType || []).length ? 'has' : '',
+      extra.businessYear,
+      extra.employees,
+
+      extra.pan,
+      extra.gst,
+      extra.udyam,
+      extra.filedITR,
+      extra.itrYears,
+      extra.turnover,
+      extra.turnover1,
+      extra.turnover2,
+      extra.turnover3,
+
+      extra.sisterConcerns,
+      extra.companyNames,
+      extra.declaration,
+    ];
+
+    const filled = fields.filter((f: any) => !!f && `${f}`.trim() !== "").length;
+    return Math.round((filled / fields.length) * 100) || 0;
   };
 
   const completionPercentage = computeProfileCompletion();
@@ -153,30 +195,7 @@ const MemberDashboard = () => {
 
             {/* Quick actions grid - mobile optimized (single set, clickable) */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              <Card className="p-4 text-center cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate("/member/adf")}>
-                <div className="bg-blue-100 p-3 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
-                  <span className="text-blue-600 font-bold">ADF</span>
-                </div>
-                <h4 className="font-medium">ADF Form</h4>
-              </Card>
-              <Card className="p-4 text-center cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate("/member/certificate")}>
-                <div className="bg-green-100 p-3 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
-                  <span className="text-green-600 font-bold">CERT</span>
-                </div>
-                <h4 className="font-medium">Certificate</h4>
-              </Card>
-              <Card className="p-4 text-center cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate("/member/help")}>
-                <div className="bg-purple-100 p-3 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
-                  <span className="text-purple-600 font-bold">HELP</span>
-                </div>
-                <h4 className="font-medium">Help Center</h4>
-              </Card>
-              <Card className="p-4 text-center cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate("/member/events")}>
-                <div className="bg-orange-100 p-3 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
-                  <span className="text-orange-600 font-bold">EV</span>
-                </div>
-                <h4 className="font-medium">Events</h4>
-              </Card>
+                  {/* Removed ADF Form, Certificate, Help Center, Events cards */}
             </div>
           </div>
         </div>
