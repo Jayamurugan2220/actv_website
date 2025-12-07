@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, Lock } from "lucide-react";
+import { Shield, Lock, Crown } from "lucide-react";
 import { toast } from "sonner";
 import { authenticateAdmin, setAdminSession, isAdminIdForRole } from "@/utils/authService";
 
-const BlockLogin = () => {
+const SuperAdminLogin = () => {
   const navigate = useNavigate();
   const [memberId, setMemberId] = useState("");
   const [password, setPassword] = useState("");
@@ -25,15 +25,15 @@ const BlockLogin = () => {
       const result = await authenticateAdmin(memberId, password);
       
       if (result.success) {
-        // Check if this admin ID is authorized for block admin role
-        if (result.role === "block_admin" || isAdminIdForRole(memberId, "block_admin")) {
+        // Check if this admin ID is authorized for super admin role
+        if (result.role === "super_admin" || isAdminIdForRole(memberId, "super_admin")) {
           // Set admin session flags
-          setAdminSession(memberId, "block_admin", `Block Admin ${memberId.split('_')[2]}`);
+          setAdminSession(memberId, "super_admin", `Super Admin ${memberId.split('_')[2]}`);
           
           toast.success("Login successful!");
           navigate("/admin/dashboard");
         } else {
-          toast.error("Access denied. This account is not authorized for Block Admin access.");
+          toast.error("Access denied. This account is not authorized for Super Admin access.");
         }
       } else {
         toast.error("Invalid credentials");
@@ -48,18 +48,18 @@ const BlockLogin = () => {
       <Card className="w-full max-w-md shadow-strong gradient-card border-0">
         <CardHeader className="space-y-2 text-center">
           <div className="mx-auto w-16 h-16 bg-secondary rounded-full flex items-center justify-center mb-2">
-            <Shield className="w-10 h-10 text-secondary-foreground" />
+            <Crown className="w-10 h-10 text-secondary-foreground" />
           </div>
-          <CardTitle className="text-3xl font-bold">Block Admin Login</CardTitle>
-          <CardDescription>Access Block Administrator Portal</CardDescription>
+          <CardTitle className="text-3xl font-bold">Super Admin Login</CardTitle>
+          <CardDescription>Access Super Administrator Portal</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="memberId">Block Admin ID</Label>
+              <Label htmlFor="memberId">Super Admin ID</Label>
               <Input
                 id="memberId"
-                placeholder="Enter your block admin ID"
+                placeholder="Enter your super admin ID"
                 value={memberId}
                 onChange={(e) => setMemberId(e.target.value)}
                 required
@@ -78,15 +78,15 @@ const BlockLogin = () => {
             </div>
             <Button type="submit" className="w-full" size="lg" variant="default">
               <Lock className="w-4 h-4 mr-2" />
-              Login as Block Admin
+              Login as Super Admin
             </Button>
           </form>
           
           <div className="mt-6 p-4 bg-muted rounded-lg">
             <h3 className="font-semibold text-sm mb-2">Default Credentials:</h3>
             <ul className="text-xs space-y-1">
-              <li>block_admin_001 / block_pass_123</li>
-              <li>block_admin_002 / block_secure_456</li>
+              <li>super_admin_001 / super_pass_123</li>
+              <li>super_admin_002 / super_secure_456</li>
             </ul>
           </div>
         </CardContent>
@@ -95,4 +95,4 @@ const BlockLogin = () => {
   );
 };
 
-export default BlockLogin;
+export default SuperAdminLogin;

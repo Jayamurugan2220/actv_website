@@ -5,10 +5,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import LoginPage from "./components/LoginPage";
+import EnhancedLoginPage from "./components/EnhancedLoginPage";
 import MemberLogin from "./pages/member/Login";
 import ForgotPassword from "./pages/member/ForgotPassword";
 import BlockLogin from "./pages/admin/BlockLogin";
+import DistrictLogin from "./pages/admin/DistrictLogin";
+import StateLogin from "./pages/admin/StateLogin";
+import SuperAdminLogin from "./pages/admin/SuperAdminLogin";
 import MemberRegister from "./pages/member/Register";
 import MemberDashboard from "./pages/member/Dashboard";
 import SidebarPage from "./pages/member/SidebarPage";
@@ -43,12 +46,18 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/login" element={<EnhancedLoginPage />} />
           {/* Aliases for member-specific paths used in some pages */}
           <Route path="/member/login" element={<MemberLogin />} />
           <Route path="/member/register" element={<MemberRegister />} />
           <Route path="/member/forgot-password" element={<ForgotPassword />} />
           <Route path="/register" element={<MemberRegister />} />
+
+          {/* Admin Login Routes */}
+          <Route path="/admin/block/login" element={<BlockLogin />} />
+          <Route path="/admin/district/login" element={<DistrictLogin />} />
+          <Route path="/admin/state/login" element={<StateLogin />} />
+          <Route path="/admin/super/login" element={<SuperAdminLogin />} />
 
           {/* Member Routes */}
           <Route path="/member/dashboard" element={<MemberDashboard />} />
@@ -68,7 +77,6 @@ const App = () => (
             <Route path="/member/events" element={<MemberEvents />} />
           
           {/* Admin Routes */}
-          <Route path="/admin/block/login" element={<BlockLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/block/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/applications" element={<Approvals />} />
