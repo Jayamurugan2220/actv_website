@@ -76,6 +76,18 @@ const ApplicationView = () => {
 
   const currentIndex = Math.max(1, Math.min(Number(app?.stage) || 1, app?.stages?.length || 1)) - 1;
 
+  // derive profile snapshots
+  const mainRaw = (app as any)?.profile?.profile ?? {};
+  const main = (mainRaw as any)?.profile ? (mainRaw as any).profile : mainRaw;
+  const extra = (app as any)?.profile?.extra ?? {};
+
+  const Field = ({ label, value }: { label: string; value: any }) => (
+    <div className="grid grid-cols-3 gap-2 items-center py-2">
+      <div className="col-span-1 text-sm text-muted-foreground">{label}</div>
+      <div className="col-span-2 text-sm font-medium break-words">{value || '-'}</div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen p-4 pb-24">
       <div className="max-w-4xl mx-auto space-y-6">
@@ -111,13 +123,13 @@ const ApplicationView = () => {
         {/* Action Card */}
         <Card className="shadow-medium border-0 gradient-card">
           <CardHeader>
-            <CardTitle>Review</CardTitle>
+            <CardTitle>User Details</CardTitle>
           </CardHeader>
           <CardContent className="pt-2 space-y-4">
             <div className="flex items-start justify-between">
               <div>
-                <h2 className="text-xl font-bold">{app?.profile?.profile?.profile?.firstName || app?.userId || 'Member'}</h2>
-                <p className="text-muted-foreground">ID: {id}</p>
+                <h2 className="text-xl font-bold">{[main?.firstName, main?.lastName].filter(Boolean).join(' ') || app?.userId || 'Member'}</h2>
+                <p className="text-muted-foreground">Member ID: {id}</p>
               </div>
               <Badge variant="outline" className={
                 app?.status === "Ready for Payment" ? "bg-success text-success-foreground" : 
@@ -160,18 +172,68 @@ const ApplicationView = () => {
           </CardContent>
         </Card>
 
-        {/* Application Details - Accordion */}
-        <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="profile">
-            <AccordionTrigger>Profile</AccordionTrigger>
+        {/* Application Details - Structured Accordions */}
+        <Accordion type="single" collapsible className="w-full space-y-3">
+          <AccordionItem value="personal">
+            <AccordionTrigger>Personal & Demographic Details</AccordionTrigger>
             <AccordionContent>
-              <pre className="text-xs bg-muted p-3 rounded-md overflow-auto">{JSON.stringify(app?.profile, null, 2)}</pre>
+              <div className="rounded-md border bg-card p-4">
+                <Field label="Name" value={[main?.firstName, main?.lastName].filter(Boolean).join(' ')} />
+                <Field label="Block" value={main?.block} />
+                <Field label="City" value={main?.district} />
+                <Field label="District" value={main?.district} />
+                <Field label="Phone Number" value={main?.phone || main?.mobile} />
+                <Field label="Email ID" value={main?.email} />
+                <Field label="Date of Birth" value={main?.dateOfBirth || main?.dob} />
+                <Field label="Aadhaar No." value={extra?.aadhaar} />
+                <Field label="Street Name" value={extra?.street} />
+                <Field label="Educational Qualification" value={extra?.education} />
+                <Field label="Religion" value={extra?.religion} />
+                <Field label="Social Category" value={extra?.socialCategory} />
+              </div>
             </AccordionContent>
           </AccordionItem>
-          <AccordionItem value="stages">
-            <AccordionTrigger>Stages</AccordionTrigger>
+
+          <AccordionItem value="business">
+            <AccordionTrigger>Business Information</AccordionTrigger>
             <AccordionContent>
-              <pre className="text-xs bg-muted p-3 rounded-md overflow-auto">{JSON.stringify(app?.stages, null, 2)}</pre>
+              <div className="rounded-md border bg-card p-4">
+                <Field label="Business Name" value={extra?.organization} />
+                <Field label="Business Type" value={extra?.constitution} />
+                <Field label="Industry" value={extra?.sector} />
+                <Field label="GST Number" value={extra?.gst} />
+                <Field label="PAN Number" value={extra?.pan} />
+                <Field label="Business Address" value={main?.address} />
+                <Field label="Annual Turnover" value={extra?.turnover} />
+                <Field label="Number of Employees" value={extra?.employees} />
+                <Field label="Business Email" value={main?.email} />
+                <Field label="Business Phone" value={main?.phone || main?.mobile} />
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="finance">
+            <AccordionTrigger>Financial & Compliance</AccordionTrigger>
+            <AccordionContent>
+              <div className="rounded-md border bg-card p-4">
+                <Field label="Filed ITR" value={extra?.filedITR} />
+                <Field label="Continuous ITR Years" value={extra?.itrYears} />
+                <Field label="Turnover (FY 2024-25)" value={extra?.turnover1} />
+                <Field label="Turnover (FY 2023-24)" value={extra?.turnover2} />
+                <Field label="Turnover (FY 2022-23)" value={extra?.turnover3} />
+                <Field label="Govt Registrations" value={Array.isArray(extra?.govtOrg) ? extra.govtOrg.join(', ') : (extra?.govtOrg || '-')} />
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="declaration">
+            <AccordionTrigger>Declaration</AccordionTrigger>
+            <AccordionContent>
+              <div className="rounded-md border bg-card p-4">
+                <Field label="No. of Sister Concerns" value={extra?.sisterConcerns} />
+                <Field label="Name(s) of Company" value={extra?.companyNames} />
+                <Field label="Declaration" value={extra?.declaration} />
+              </div>
             </AccordionContent>
           </AccordionItem>
         </Accordion>

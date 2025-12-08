@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import PageContainer from "@/components/layout/PageContainer";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UserPlus, ArrowRight, Upload } from "lucide-react";
@@ -19,20 +20,43 @@ const MemberRegister = () => {
   const [districts, setDistricts] = useState<string[]>([]);
   const [partialData, setPartialData] = useState<any>({});
 
+  // Derive role from email and id patterns
+  const emailToRole = (e: string): string => {
+    const n = (e || '').trim().toLowerCase();
+    if (n.startsWith('block.')) return 'block_admin';
+    if (n.startsWith('district.')) return 'district_admin';
+    if (n.startsWith('state.')) return 'state_admin';
+    if (n.startsWith('super.')) return 'super_admin';
+    // also accept exact special emails if used
+    if (n === 'blockadmin@activ.com') return 'block_admin';
+    if (n === 'districtadmin@activ.com') return 'district_admin';
+    if (n === 'stateadmin@activ.com') return 'state_admin';
+    if (n === 'superadmin@activ.com') return 'super_admin';
+    return 'member';
+  };
+
+  const idToRole = (id: string): string => {
+    const s = (id || '').toUpperCase();
+    if (s.startsWith('BA')) return 'block_admin';
+    if (s.startsWith('DA')) return 'district_admin';
+    if (s.startsWith('SA')) return 'state_admin';
+    if (s.startsWith('SU')) return 'super_admin';
+    return 'member';
+  };
+
   type Step1Form = {
     firstName: string;
     middleName?: string;
     lastName?: string;
     mobile: string;
     email: string;
+    password: string;
+    confirmPassword: string;
     gender?: string;
     dob?: string;
   };
 
   type Step2Form = {
-    memberName: string;
-    password: string;
-    confirmPassword: string;
     stateName: string;
     districtName: string;
     block: string;
@@ -40,23 +64,26 @@ const MemberRegister = () => {
   };
 
   const { register: registerStep1, handleSubmit: handleSubmitStep1, control: controlStep1, formState: { errors: errorsStep1 } } = useForm<Step1Form>({ mode: 'onBlur' });
-  const { register: registerStep2, handleSubmit: handleSubmitStep2, control: controlStep2, watch: watchStep2, formState: { errors: errorsStep2 } } = useForm<Step2Form>({ mode: 'onBlur' });
+  const { register: registerStep2, handleSubmit: handleSubmitStep2, control: controlStep2, watch: watchStep2, clearErrors: clearErrorsStep2, formState: { errors: errorsStep2 } } = useForm<Step2Form>({
+    mode: 'onBlur',
+    reValidateMode: 'onChange',
+    defaultValues: { stateName: '', districtName: '', block: '', address: '' },
+  });
 
   const handleStep1Submit = (data: Step1Form) => {
+    if (data.password !== data.confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
     setPartialData(data);
     setStep(2);
   };
 
   const handleStep2Submit = async (data: Step2Form) => {
-    if (data.password !== data.confirmPassword) {
-      toast.error('Passwords do not match');
-      return;
-    }
-
     const combined = {
       ...partialData,
-      memberId: data.memberName,
-      password: data.password,
+      memberId: partialData.email,
+      password: partialData.password,
       state: data.stateName,
       district: data.districtName,
       block: data.block,
@@ -69,17 +96,20 @@ const MemberRegister = () => {
       const usersJson = localStorage.getItem('users') || '[]';
       const users = JSON.parse(usersJson) as Array<any>;
 
-      // prevent duplicate memberId
-      if (users.some((u) => u.memberId === data.memberName)) {
+      // prevent duplicate memberId (using email as unique ID)
+      if (users.some((u) => u.memberId === partialData.email)) {
         toast.error('Member ID already exists. Please choose another.');
         return;
       }
 
+      // derive intended role from email prefix (fallback to member)
+      const roleFromEmail = emailToRole(partialData.email);
       users.push({
-        memberId: data.memberName,
-        password: data.password,
+        memberId: partialData.email,
+        password: partialData.password,
         email: partialData.email,
         firstName: partialData.firstName,
+        role: roleFromEmail,
         registeredAt: new Date().toISOString(),
       });
 
@@ -89,7 +119,7 @@ const MemberRegister = () => {
         const res = await fetch('http://localhost:4000/api/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ memberId: data.memberName, password: data.password, email: partialData.email, firstName: partialData.firstName }),
+          body: JSON.stringify({ memberId: partialData.email, password: partialData.password, email: partialData.email, firstName: partialData.firstName }),
         });
 
         if (res.ok) {
@@ -98,7 +128,7 @@ const MemberRegister = () => {
           // Also save the full profile to backend after successful registration
           try {
             const profilePayload = {
-              userId: data.memberName,
+              userId: partialData.email,
               firstName: partialData.firstName,
               lastName: partialData.lastName,
               email: partialData.email,
@@ -130,12 +160,21 @@ const MemberRegister = () => {
       localStorage.setItem('registrationData', JSON.stringify(combined));
       localStorage.setItem('userName', partialData.firstName || combined.firstName || 'Member');
       // set session so the user is logged in immediately after register
-      localStorage.setItem('memberId', data.memberName);
-      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('memberId', partialData.email);
+      const fromEmail = emailToRole(partialData.email);
+      const fromId = idToRole(partialData.email); // memberId equals email here
+      const roleDerived = fromEmail !== 'member' ? fromEmail : (fromId !== 'member' ? fromId : 'member');
+      localStorage.setItem('role', roleDerived);
+      if (['super_admin','state_admin','district_admin','block_admin'].includes(roleDerived)) {
+        localStorage.setItem('isAdminLoggedIn', 'true');
+      } else {
+        localStorage.setItem('isLoggedIn', 'true');
+      }
       localStorage.removeItem('hasVisitedDashboard');
       toast.success('Registration successful — you are now signed in');
-      // navigate to dashboard directly
-      navigate('/member/dashboard');
+      // navigate to appropriate dashboard
+      const adminPath = roleDerived === 'block_admin' ? '/admin/block/dashboard' : '/admin/dashboard';
+      navigate(['super_admin','state_admin','district_admin','block_admin'].includes(roleDerived) ? adminPath : '/member/dashboard');
     } catch (err) {
       console.error('Failed to persist user', err);
       toast.error('Failed to save registration. Please try again.');
@@ -163,9 +202,9 @@ const MemberRegister = () => {
   }, [watchedState]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-[url('/assets/gradient-bg.png')] bg-cover bg-center">
-      <div className="w-full max-w-6xl">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+    <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 bg-[url('/assets/gradient-bg.png')] bg-cover bg-center">
+      <PageContainer>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-start">
           {/* Left column - Title and progress (visible on all sizes but styled differently) */}
           <div className="w-full lg:w-auto">
             <div className="text-center lg:text-left mb-6 lg:mb-0">
@@ -248,34 +287,42 @@ const MemberRegister = () => {
                       </div>
                     </div>
 
-                    {/* Password set kept in step 2 - skipping on step1 */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="password">Password*</Label>
+                        <Input
+                          id="password"
+                          type="password"
+                          placeholder="Enter Password"
+                          {...registerStep1('password', {
+                            required: 'Password required',
+                            minLength: { value: 6, message: 'At least 6 characters' },
+                          })}
+                        />
+                        {errorsStep1.password && (
+                          <p className="text-xs text-red-600 mt-1">{errorsStep1.password.message}</p>
+                        )}
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="confirmPassword">Confirm Password*</Label>
+                        <Input
+                          id="confirmPassword"
+                          type="password"
+                          placeholder="Confirm Password"
+                          {...registerStep1('confirmPassword', { required: 'Please confirm password' })}
+                        />
+                        {errorsStep1.confirmPassword && (
+                          <p className="text-xs text-red-600 mt-1">{errorsStep1.confirmPassword.message}</p>
+                        )}
+                      </div>
+                    </div>
 
                     <div className="flex justify-end">
                       <Button type="submit" className="bg-blue-600 text-white">Next</Button>
                     </div>
                   </form>
                 ) : (
-                  <form onSubmit={handleSubmitStep2(handleStep2Submit)} className="space-y-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="memberId">Member Name</Label>
-                      <Input id="memberId" placeholder="Member Name" {...registerStep2('memberName', { required: 'Member Name required' })} />
-                      {errorsStep2.memberName && <p className="text-xs text-red-600 mt-1">{errorsStep2.memberName.message}</p>}
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="password">Password*</Label>
-                        <Input id="password" type="password" placeholder="Enter Password" {...registerStep2('password', { required: 'Password required', minLength: { value: 6, message: 'At least 6 characters' } })} />
-                        {errorsStep2.password && <p className="text-xs text-red-600 mt-1">{errorsStep2.password.message}</p>}
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="confirmPassword">Confirm Password*</Label>
-                        <Input id="confirmPassword" type="password" placeholder="Confirm Password" {...registerStep2('confirmPassword', { required: 'Please confirm password' })} />
-                        {errorsStep2.confirmPassword && <p className="text-xs text-red-600 mt-1">{errorsStep2.confirmPassword.message}</p>}
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
+                  <form onSubmit={handleSubmitStep2(handleStep2Submit)} className="space-y-6"><div className="space-y-2">
                       <Label htmlFor="state">State*</Label>
                       <Controller
                         control={controlStep2}
@@ -328,7 +375,23 @@ const MemberRegister = () => {
 
                     <div className="space-y-2">
                       <Label htmlFor="block">Block*</Label>
-                      <Input id="block" placeholder="Block" {...registerStep2('block', { required: 'Block required' })} />
+                      <Controller
+                        control={controlStep2}
+                        name="block"
+                        defaultValue=""
+                        rules={{ required: 'Block is required' }}
+                        render={({ field }) => (
+                          <Select value={field.value || ''} onValueChange={(v: string) => { field.onChange(v); clearErrorsStep2('block'); }}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select block" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="block1">Block 1</SelectItem>
+                              <SelectItem value="block2">Block 2</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
                       {errorsStep2.block && <p className="text-xs text-red-600 mt-1">{errorsStep2.block.message}</p>}
                     </div>
 
@@ -339,7 +402,18 @@ const MemberRegister = () => {
                     </div>
 
                     <div className="flex justify-between">
-                      <Button type="button" variant="outline" onClick={() => setStep(1)}>Previous</Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setStep(1);
+                          try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch {}
+                        }}
+                      >
+                        Previous
+                      </Button>
                       <Button type="submit" className="bg-blue-600 text-white">Submit</Button>
                     </div>
                   </form>
@@ -348,7 +422,7 @@ const MemberRegister = () => {
             </Card>
           </div>
         </div>
-      </div>
+      </PageContainer>
     </div>
   );
 };

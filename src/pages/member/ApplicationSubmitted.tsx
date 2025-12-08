@@ -58,25 +58,25 @@ export default function ApplicationSubmitted() {
   const pct = total ? Math.round((completed / total) * 100) : 0;
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-blue-100 to-blue-200">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 bg-gradient-to-br from-blue-100 to-blue-200">
+      <div className="w-full max-w-3xl">
         <Card className="rounded-lg shadow-xl">
-          <CardContent className="p-8">
+          <CardContent className="p-4 sm:p-6 md:p-8">
             <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mb-4">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-emerald-100 flex items-center justify-center mb-4">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#064E3B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </div>
-              <h2 className="text-2xl font-bold mb-2">Application Submitted!</h2>
-              <p className="text-sm text-muted-foreground mb-4">Your membership application has been successfully submitted and is now under review. You will receive updates on your application status.</p>
+              <h2 className="text-2xl md:text-3xl font-bold mb-2">Application Submitted!</h2>
+              <p className="text-sm md:text-base text-muted-foreground mb-4">Your membership application has been successfully submitted and is now under review. You will receive updates on your application status.</p>
 
-              <div className="w-full bg-white rounded p-4 mb-4 border">
-                <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground mb-2">
+              <div className="w-full bg-white rounded p-3 sm:p-4 mb-4 border">
+                <div className="grid grid-cols-2 gap-2 text-xs sm:text-sm text-muted-foreground mb-2">
                   <div>Application ID:</div>
-                  <div className="font-semibold text-sm text-black">{app?.id}</div>
+                  <div className="font-semibold text-sm sm:text-base text-black break-all">{app?.id}</div>
                   <div>Submitted:</div>
-                  <div className="text-sm">{app ? new Date(app.submittedAt).toLocaleString() : '-'}</div>
+                  <div className="text-xs sm:text-sm">{app ? new Date(app.submittedAt).toLocaleString() : '-'}</div>
                   <div>Status:</div>
-                  <div className="text-sm text-amber-500 font-semibold">{app?.status || 'Under Review'}</div>
+                  <div className="text-xs sm:text-sm text-amber-500 font-semibold">{app?.status || 'Under Review'}</div>
                 </div>
 
                 {total > 0 && (
@@ -90,7 +90,7 @@ export default function ApplicationSubmitted() {
                       <div className="h-2 rounded-full bg-blue-600 transition-all" style={{ width: `${pct}%` }} />
                     </div>
 
-                    <div className="mt-3 grid grid-cols-4 gap-2 text-xs text-muted-foreground items-center">
+                    <div className="mt-3 grid grid-cols-4 gap-2 text-[10px] sm:text-xs text-muted-foreground items-center">
                       {app.stages.map((s: any) => (
                         <div key={s.key} className="flex flex-col items-center">
                           <div className={`w-3 h-3 rounded-full ${s.status === 'Approved' ? 'bg-green-500' : s.status === 'Under Review' ? 'bg-yellow-400' : 'bg-gray-300'}`} />
@@ -102,16 +102,16 @@ export default function ApplicationSubmitted() {
                 )}
               </div>
 
-              <div className="w-full space-y-3 mb-4">
+              <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
                 {app?.stages?.map((s: any) => (
                   <div key={s.key} className={`p-3 rounded border ${s.status === 'Approved' ? 'bg-green-50' : s.status === 'Under Review' ? 'bg-yellow-50' : 'bg-gray-50'}`}>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="text-sm font-semibold">{s.title}</div>
-                        <div className="text-xs text-muted-foreground">{s.reviewer}{s.reviewDate ? ` — Review date: ${new Date(s.reviewDate).toLocaleDateString()}` : ''}</div>
-                        {s.notes && <div className="mt-2 text-xs bg-white border rounded p-2 text-muted-foreground">{s.notes}</div>}
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="text-sm font-semibold truncate">{s.title}</div>
+                        <div className="text-xs text-muted-foreground truncate">{s.reviewer}{s.reviewDate ? ` — Review date: ${new Date(s.reviewDate).toLocaleDateString()}` : ''}</div>
+                        {s.notes && <div className="mt-2 text-xs bg-white border rounded p-2 text-muted-foreground break-words">{s.notes}</div>}
                       </div>
-                      <div>
+                      <div className="shrink-0">
                         <div className={`px-3 py-1 rounded-full text-xs font-semibold ${s.status === 'Approved' ? 'bg-green-600 text-white' : s.status === 'Under Review' ? 'bg-yellow-400 text-black' : 'bg-gray-200 text-gray-600'}`}>{s.status}</div>
                       </div>
                     </div>
@@ -121,12 +121,12 @@ export default function ApplicationSubmitted() {
 
               <div className="w-full bg-yellow-50 border rounded p-3 mb-4">
                 <div className="font-semibold text-sm">Important Notice</div>
-                <div className="text-xs text-muted-foreground mt-1">Please keep your application ID safe. You may need it for future reference and status inquiries.</div>
+                <div className="text-xs sm:text-sm text-muted-foreground mt-1">Please keep your application ID safe. You may need it for future reference and status inquiries.</div>
               </div>
 
-              <div className="w-full flex flex-col gap-3">
-                <Button className="bg-blue-600 text-white" onClick={() => navigate(`/member/application-status?id=${encodeURIComponent(app?.id)}`)}>View Application Status</Button>
-                <Button variant="outline" onClick={downloadJson}>Download Application Copy</Button>
+              <div className="w-full flex flex-col md:flex-row gap-3">
+                <Button className="bg-blue-600 text-white w-full" onClick={() => navigate(`/member/application-status?id=${encodeURIComponent(app?.id)}`)}>View Application Status</Button>
+                <Button className="w-full" variant="outline" onClick={downloadJson}>Download Application Copy</Button>
               </div>
             </div>
           </CardContent>

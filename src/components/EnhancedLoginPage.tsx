@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Card } from "./ui/card";
@@ -112,7 +112,7 @@ export default function EnhancedLoginPage() {
           return;
         }
       } catch (err) {
-        // no backend — fallback to localStorage
+        // no backend â€” fallback to localStorage
       }
 
       const usersJson = localStorage.getItem('users');
@@ -153,7 +153,91 @@ export default function EnhancedLoginPage() {
     }
   };
 
-  const handleSubmit = userType === "admin" ? handleAdminLogin : handleMemberLogin;
+  
+  // Unified login: try admin auth first, then member flow
+  const handleUnifiedSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    if (!identifier || !password) {
+      toast.error('Please enter both ID and password');
+      setIsLoading(false);
+      return;
+    }
+    try {
+      // Attempt admin authentication (supports IDs like block_admin_001)
+      try {
+        const adminAuth = await authenticateAdmin(identifier, password);
+        if (adminAuth.success) {
+          const role = (adminAuth.role as string) || '';
+          const label = (role.split('_')[0] || 'Admin');
+          setAdminSession(
+            identifier,
+            role || 'member',
+            `${label.charAt(0).toUpperCase() + label.slice(1)} Admin`
+          );
+          const adminPath = role === 'block_admin' ? '/admin/block/dashboard' : '/admin/dashboard';
+          navigate(adminPath);
+          toast.success('Login successful!');
+          return;
+        }
+      } catch {}
+
+      // Member/backend authentication
+      try {
+        const res = await fetch('http://localhost:4000/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ identifier, password }),
+        });
+        if (res.ok) {
+          const json = await res.json();
+          const found = json.user;
+          localStorage.setItem('userName', found.firstName || found.email || found.memberId);
+          localStorage.setItem('memberId', found.memberId);
+          const role = (typeof found.role === 'string' && found.role) || '';
+          localStorage.setItem('role', role || 'member');
+          localStorage.setItem('isLoggedIn', 'true');
+          const isAdmin = ['super_admin','state_admin','district_admin','block_admin'].includes(role);
+          const adminPath = role === 'block_admin' ? '/admin/block/dashboard' : '/admin/dashboard';
+          navigate(isAdmin ? adminPath : '/member/dashboard');
+          return;
+        }
+      } catch {}
+
+      // Local users fallback
+      const usersJson = localStorage.getItem('users');
+      if (!usersJson) {
+        toast.error('No registered users found. Please register first.');
+        setIsLoading(false);
+        return;
+      }
+      const users = JSON.parse(usersJson) as Array<any>;
+      const found = users.find((u) => u.email === identifier || u.memberId === identifier);
+      if (!found) {
+        toast.error('No account matches that email or member ID');
+        setIsLoading(false);
+        return;
+      }
+      if (found.password !== password) {
+        toast.error('Invalid credentials');
+        setIsLoading(false);
+        return;
+      }
+      localStorage.setItem('userName', found.firstName || found.email || found.memberId);
+      localStorage.setItem('memberId', found.memberId);
+      const role = (typeof found.role === 'string' && found.role) || '';
+      localStorage.setItem('role', role || 'member');
+      localStorage.setItem('isLoggedIn', 'true');
+      const isAdminFallback = ['super_admin','state_admin','district_admin','block_admin'].includes(role);
+      const adminPath = role === 'block_admin' ? '/admin/block/dashboard' : '/admin/dashboard';
+      navigate(isAdminFallback ? adminPath : '/member/dashboard');
+    } catch (err) {
+      console.error(err);
+      toast.error('Login failed. Please try again later.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // if already logged in, redirect to dashboard
   useEffect(() => {
@@ -190,22 +274,7 @@ export default function EnhancedLoginPage() {
         </div>
         
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-3">
-            <Button
-              variant={userType === "member" ? "default" : "outline"}
-              className="w-full"
-              onClick={() => setUserType("member")}
-            >
-              Member Login
-            </Button>
-            <Button
-              variant={userType === "admin" ? "default" : "outline"}
-              className="w-full"
-              onClick={() => setUserType("admin")}
-            >
-              Admin Login
-            </Button>
-          </div>
+          
 
           {userType === "admin" && (
             <div className="space-y-4">
@@ -268,11 +337,11 @@ export default function EnhancedLoginPage() {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleUnifiedSubmit} className="space-y-4">
             <div>
               <Input
                 type="text"
-                placeholder={userType === "admin" ? "Enter admin ID" : "Enter your email"}
+                placeholder="Enter email or ID"
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
                 className="w-full"
@@ -314,3 +383,5 @@ export default function EnhancedLoginPage() {
     </div>
   );
 }
+
+

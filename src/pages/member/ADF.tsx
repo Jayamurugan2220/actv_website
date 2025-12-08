@@ -49,7 +49,7 @@ const ADFForm = () => {
   const [districts, setDistricts] = useState<string[]>([]);
   const [isEditing, setIsEditing] = useState(true);
 
-  // Load existing ADF data from localStorage
+  // Load existing ADF data from localStorage; if none, prefill from registration/profile
   useEffect(() => {
     const savedADF = localStorage.getItem("adfFormData");
     if (savedADF) {
@@ -59,9 +59,42 @@ const ADFForm = () => {
         setStatus(parsed.status || "draft");
         setSubmittedDate(parsed.submittedDate || "");
         setIsEditing(parsed.status === "draft");
+        // initialize districts if state present
+        if (parsed.data?.state && INDIA_DISTRICTS[parsed.data.state]) {
+          setDistricts(INDIA_DISTRICTS[parsed.data.state]);
+        }
+        return;
       } catch (error) {
-        console.log("No saved ADF data found");
+        // ignore and try to prefill from profile below
       }
+    }
+
+    // No saved ADF — prefill from registrationData or userProfile
+    try {
+      const regJson = localStorage.getItem('userProfile') || localStorage.getItem('registrationData');
+      if (regJson) {
+        const reg = JSON.parse(regJson);
+        const prefilled: ADFFormData = {
+          fullName: reg.firstName && reg.lastName ? `${reg.firstName} ${reg.lastName}` : (reg.firstName || reg.fullName || ""),
+          email: reg.email || "",
+          phone: reg.mobile || reg.phone || "",
+          dateOfBirth: reg.dob || reg.dateOfBirth || "",
+          state: reg.state || reg.stateName || "",
+          district: reg.district || reg.districtName || "",
+          block: reg.block || "",
+          address: reg.address || "",
+          qualifications: "",
+          experience: "",
+          sector: "",
+          objectives: "",
+        };
+        setFormData(prefilled);
+        if (prefilled.state && INDIA_DISTRICTS[prefilled.state]) {
+          setDistricts(INDIA_DISTRICTS[prefilled.state]);
+        }
+      }
+    } catch (e) {
+      // ignore prefill errors
     }
   }, []);
 
@@ -316,14 +349,15 @@ const ADFForm = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                       <div className="space-y-2">
                         <Label htmlFor="block">Block*</Label>
-                        <Input
-                          id="block"
-                          name="block"
-                          placeholder="Enter block name"
-                          value={formData.block}
-                          onChange={handleInputChange}
-                          disabled={!isEditing}
-                        />
+                        <Select value={formData.block || ''} onValueChange={(v: string) => handleSelectChange('block', v)} disabled={!isEditing}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select block" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="block1">Block 1</SelectItem>
+                            <SelectItem value="block2">Block 2</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="address">Complete Address*</Label>

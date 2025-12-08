@@ -334,31 +334,31 @@ export default function MemberProfile() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
                             <Label>Name</Label>
-                            <Input disabled value={watch('firstName') ? `${watch('firstName')} ${watch('lastName') ?? ''}` : ''} />
+                            <Input className="border border-black" disabled value={watch('firstName') ? `${watch('firstName')} ${watch('lastName') ?? ''}` : ''} />
                           </div>
                           <div>
                             <Label>Block</Label>
-                            <Input disabled value={watch('block') || ''} />
+                            <Input className="border border-black" disabled value={watch('block') || ''} />
                           </div>
                           <div>
                             <Label>City</Label>
-                            <Input disabled value={watch('district') || ''} />
+                            <Input className="border border-black" disabled value={watch('district') || ''} />
                           </div>
                           <div>
                             <Label>District</Label>
-                            <Input disabled value={watch('district') || ''} />
+                            <Input className="border border-black" disabled value={watch('district') || ''} />
                           </div>
                           <div>
                             <Label>Phone Number</Label>
-                            <Input disabled value={watch('phone') || ''} />
+                            <Input className="border border-black" disabled value={watch('phone') || ''} />
                           </div>
                           <div>
                             <Label>Email ID</Label>
-                            <Input disabled value={watch('email') || ''} />
+                            <Input className="border border-black" disabled value={watch('email') || ''} />
                           </div>
                           <div>
                             <Label>Date of Birth</Label>
-                            <Input disabled value={watch('dateOfBirth') || ''} />
+                            <Input className="border border-black" disabled value={watch('dateOfBirth') || ''} />
                           </div>
                         </div>
 
@@ -367,23 +367,23 @@ export default function MemberProfile() {
                           <div className="grid grid-cols-1 gap-3">
                             <div>
                               <Label>Aadhaar No. (Personal Identity No.)</Label>
-                              <Input name="aadhaar" value={extra.aadhaar || ''} onChange={handleExtraChange} />
+                              <Input className="border border-black" name="aadhaar" value={extra.aadhaar || ''} onChange={handleExtraChange} />
                             </div>
                             <div>
                               <Label>Street Name</Label>
-                              <Input name="street" value={extra.street || ''} onChange={handleExtraChange} />
+                              <Input className="border border-black" name="street" value={extra.street || ''} onChange={handleExtraChange} />
                             </div>
                             <div>
                               <Label>Educational Qualification</Label>
-                              <Input name="education" value={extra.education || ''} onChange={handleExtraChange} />
+                              <Input className="border border-black" name="education" value={extra.education || ''} onChange={handleExtraChange} />
                             </div>
                             <div>
                               <Label>Religion</Label>
-                              <Input name="religion" value={extra.religion || ''} onChange={handleExtraChange} />
+                              <Input className="border border-black" name="religion" value={extra.religion || ''} onChange={handleExtraChange} />
                             </div>
                             <div>
                               <Label>Social Category</Label>
-                              <Input name="socialCategory" value={extra.socialCategory || ''} onChange={handleExtraChange} />
+                              <Input className="border border-black" name="socialCategory" value={extra.socialCategory || ''} onChange={handleExtraChange} />
                             </div>
                           </div>
                         </div>
@@ -447,13 +447,13 @@ export default function MemberProfile() {
                             </div>
                             <div>
                               <Label>Number of Employees</Label>
-                              <Input name="employees" value={extra.employees || ''} onChange={handleExtraChange} />
+                              <Input className="border border-black" name="employees" value={extra.employees || ''} onChange={handleExtraChange} />
                             </div>
                           </div>
 
                           <div>
                             <Label>Member of any other Chamber/Association</Label>
-                            <Input name="chamber" value={extra.chamber || ''} onChange={handleExtraChange} />
+                            <Input className="border border-black" name="chamber" value={extra.chamber || ''} onChange={handleExtraChange} />
                           </div>
 
                           <div>
@@ -481,15 +481,15 @@ export default function MemberProfile() {
                         <div className="grid grid-cols-1 gap-3">
                           <div>
                             <Label>PAN Number</Label>
-                            <Input name="pan" value={extra.pan || ''} onChange={handleExtraChange} placeholder="Enter PAN number" />
+                            <Input className="border border-black" name="pan" value={extra.pan || ''} onChange={handleExtraChange} placeholder="Enter PAN number" />
                           </div>
                           <div>
                             <Label>GST Number</Label>
-                            <Input name="gst" value={extra.gst || ''} onChange={handleExtraChange} placeholder="Enter GST number" />
+                            <Input className="border border-black" name="gst" value={extra.gst || ''} onChange={handleExtraChange} placeholder="Enter GST number" />
                           </div>
                           <div>
                             <Label>Udyam Number</Label>
-                            <Input name="udyam" value={extra.udyam || ''} onChange={handleExtraChange} placeholder="Enter Udyam number" />
+                            <Input className="border border-black" name="udyam" value={extra.udyam || ''} onChange={handleExtraChange} placeholder="Enter Udyam number" />
                           </div>
 
                           <div>
@@ -502,7 +502,7 @@ export default function MemberProfile() {
 
                           <div>
                             <Label>How many continuous years have you filed ITR?</Label>
-                            <Input name="itrYears" value={extra.itrYears || ''} onChange={handleExtraChange} />
+                            <Input className="border border-black" name="itrYears" value={extra.itrYears || ''} onChange={handleExtraChange} />
                           </div>
 
                           <div>
@@ -517,9 +517,9 @@ export default function MemberProfile() {
 
                           <div>
                             <Label>Turnover for Last 3 Yrs</Label><br></br>
-                            <Input name="turnover1" value={extra.turnover1 || ''} onChange={handleExtraChange} placeholder="FY 2024-25" /><br></br>
-                            <Input name="turnover2" value={extra.turnover2 || ''} onChange={handleExtraChange} placeholder="FY 2023-24" /><br></br>
-                            <Input name="turnover3" value={extra.turnover3 || ''} onChange={handleExtraChange} placeholder="FY 2022-23" />
+                            <Input className="border border-black" name="turnover1" value={extra.turnover1 || ''} onChange={handleExtraChange} placeholder="FY 2024-25" /><br></br>
+                            <Input className="border border-black" name="turnover2" value={extra.turnover2 || ''} onChange={handleExtraChange} placeholder="FY 2023-24" /><br></br>
+                            <Input className="border border-black" name="turnover3" value={extra.turnover3 || ''} onChange={handleExtraChange} placeholder="FY 2022-23" />
                           </div>
                         </div>
                       </div>
@@ -531,11 +531,11 @@ export default function MemberProfile() {
                         <div className="grid grid-cols-1 gap-3">
                           <div>
                             <Label>No. of Sister Concerns</Label>
-                            <Input name="sisterConcerns" value={extra.sisterConcerns || ''} onChange={handleExtraChange} />
+                            <Input className="border border-black" name="sisterConcerns" value={extra.sisterConcerns || ''} onChange={handleExtraChange} />
                           </div>
                           <div>
                             <Label>Name(s) of Company</Label>
-                            <Input name="companyNames" value={extra.companyNames || ''} onChange={handleExtraChange} />
+                            <Input className="border border-black" name="companyNames" value={extra.companyNames || ''} onChange={handleExtraChange} />
                           </div>
                           <div>
                             <button type="button" onClick={() => setExtra(prev => ({ ...prev, companyNames: (prev.companyNames || '') + (prev.companyNames ? ', ' : '') }))} className="mt-2 inline-block px-3 py-1 border rounded text-sm">Add Another Company</button>
@@ -553,7 +553,19 @@ export default function MemberProfile() {
                     )}
 
                     <div className="flex justify-between mt-6">
-                      {step > 1 && <Button type="button" variant="outline" onClick={prevStep}>Previous</Button>}
+                      {step > 1 && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            prevStep();
+                          }}
+                        >
+                          Previous
+                        </Button>
+                      )}
                       <div className="ml-auto">
                         <Button type="submit" className="bg-blue-600 text-white">{step === 4 ? 'Submit Application' : 'Next'}</Button>
                       </div>
@@ -574,31 +586,31 @@ export default function MemberProfile() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="firstName">First Name*</Label>
-                      <Input id="firstName" {...register("firstName", { required: "First name required" })} disabled={!isEditing} />
+                      <Input className="border border-black" id="firstName" {...register("firstName", { required: "First name required" })} disabled={!isEditing} />
                       {errors.firstName && <p className="text-xs text-red-600 mt-1">{errors.firstName.message}</p>}
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="middleName">Middle Name</Label>
-                      <Input id="middleName" {...register("middleName")} disabled={!isEditing} />
+                      <Input className="border border-black" id="middleName" {...register("middleName")} disabled={!isEditing} />
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="lastName">Last Name</Label>
-                      <Input id="lastName" {...register("lastName")} disabled={!isEditing} />
+                      <Input className="border border-black" id="lastName" {...register("lastName")} disabled={!isEditing} />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="email">Email Address*</Label>
-                      <Input id="email" type="email" {...register("email", { required: "Email required", pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Invalid email" } })} disabled={!isEditing} />
+                      <Input className="border border-black" id="email" type="email" {...register("email", { required: "Email required", pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Invalid email" } })} disabled={!isEditing} />
                       {errors.email && <p className="text-xs text-red-600 mt-1">{errors.email.message}</p>}
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="phone">Phone Number*</Label>
-                      <Input id="phone" {...register("phone", { required: "Phone required", pattern: { value: /^\+?\d{10,15}$/, message: "Invalid phone" } })} disabled={!isEditing} />
+                      <Input className="border border-black" id="phone" {...register("phone", { required: "Phone required", pattern: { value: /^\+?\d{10,15}$/, message: "Invalid phone" } })} disabled={!isEditing} />
                       {errors.phone && <p className="text-xs text-red-600 mt-1">{errors.phone.message}</p>}
                     </div>
                   </div>
@@ -606,7 +618,7 @@ export default function MemberProfile() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="dateOfBirth">Date of Birth</Label>
-                      <Input id="dateOfBirth" type="date" {...register("dateOfBirth")} disabled={!isEditing} />
+                      <Input className="border border-black" id="dateOfBirth" type="date" {...register("dateOfBirth")} disabled={!isEditing} />
                     </div>
 
                     <div className="space-y-2">
@@ -616,7 +628,7 @@ export default function MemberProfile() {
                         name="gender"
                         render={({ field }) => (
                           <Select value={field.value || ""} onValueChange={(v: string) => field.onChange(v)} disabled={!isEditing}>
-                            <SelectTrigger>
+                            <SelectTrigger className="border border-black">
                               <SelectValue placeholder="Select gender" />
                             </SelectTrigger>
                             <SelectContent>
@@ -641,7 +653,7 @@ export default function MemberProfile() {
                           name="state"
                           render={({ field }) => (
                             <Select value={field.value || ""} onValueChange={(v: string) => field.onChange(v)} disabled={!isEditing}>
-                              <SelectTrigger>
+                              <SelectTrigger className="border border-black">
                                 <SelectValue placeholder="Select state" />
                               </SelectTrigger>
                               <SelectContent>
@@ -663,7 +675,7 @@ export default function MemberProfile() {
                           name="district"
                           render={({ field }) => (
                             <Select value={field.value || ""} onValueChange={(v: string) => field.onChange(v)} disabled={!isEditing || !selectedState}>
-                              <SelectTrigger>
+                              <SelectTrigger className="border border-black">
                                 <SelectValue placeholder={districts.length ? "Select district" : "No districts available"} />
                               </SelectTrigger>
                               <SelectContent>
@@ -685,7 +697,21 @@ export default function MemberProfile() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="block">Block</Label>
-                        <Input id="block" {...register("block")} disabled={!isEditing} />
+                        <Controller
+                          control={control}
+                          name="block"
+                          render={({ field }) => (
+                            <Select value={field.value || ""} onValueChange={(v: string) => field.onChange(v)} disabled={!isEditing}>
+                              <SelectTrigger className="border border-black">
+                                <SelectValue placeholder="Select block" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="block1">Block 1</SelectItem>
+                                <SelectItem value="block2">Block 2</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          )}
+                        />
                       </div>
 
                       <div className="space-y-2">

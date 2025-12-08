@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -46,6 +46,15 @@ export default function PaymentSuccess() {
 
   const planTitle = app?.payment?.plan === 'lifetime' ? 'Lifetime Membership' : 'Annual Membership';
   const paidAmount = app?.payment?.totalAmount ?? app?.payment?.planPrice ?? 0;
+
+  // Mark membership active so menus/features can unlock
+  useEffect(() => {
+    try {
+      if (app?.payment?.paidAt || app?.payment) {
+        localStorage.setItem('membershipActive', 'true');
+      }
+    } catch {}
+  }, []);
 
   return (
     <div className="min-h-screen p-6 bg-gradient-to-br from-blue-100 to-blue-200">

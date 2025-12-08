@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -8,7 +8,7 @@ import {
   Clock, Home, List, User,
   Menu
 } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import AdminSidebar from "@/components/AdminSidebar";
 import AdminMobileMenu from "@/components/AdminMobileMenu";
 
@@ -19,6 +19,24 @@ const AdminDashboard = () => {
     { id: "Actv2024002", name: "Jane Smith", status: "pending", date: "2024-01-14" },
     { id: "Actv2024003", name: "Robert Brown", status: "approved", date: "2024-01-13" },
   ];
+
+  const role = (typeof window !== 'undefined' ? localStorage.getItem('role') : '') || '';
+  const userName = (typeof window !== 'undefined' ? localStorage.getItem('userName') : '') || 'Admin';
+  const roleLabel = useMemo(() => {
+    if (role === 'block_admin') return 'Block Admin';
+    if (role === 'district_admin') return 'District Admin';
+    if (role === 'state_admin') return 'State Admin';
+    if (role === 'super_admin') return 'Super Admin';
+    return 'Member';
+  }, [role]);
+  const avatarInitials = useMemo(() => {
+    if (role === 'block_admin') return 'BA';
+    if (role === 'district_admin') return 'DA';
+    if (role === 'state_admin') return 'SA';
+    if (role === 'super_admin') return 'SU';
+    const parts = (userName || 'A').trim().split(/\s+/);
+    return parts.map(p => p[0]).join('').slice(0,2).toUpperCase();
+  }, [role, userName]);
 
   return (
     <div className="min-h-screen flex">
@@ -59,8 +77,8 @@ const AdminDashboard = () => {
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <h1 className="text-xl font-bold">Hello, Block Admin</h1>
-                  <p className="text-sm text-muted-foreground">Block: North Zone</p>
+                  <h1 className="text-xl font-bold">Hello, {userName}</h1>
+                  <p className="text-sm text-muted-foreground">{roleLabel}</p>
                 </div>
               </div>
             </div>
