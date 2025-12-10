@@ -51,6 +51,8 @@ export default function ApplicationStatus() {
     { id: 4, title: 'Ready for Payment', status: 'Pending' },
   ];
 
+  const sanitize = (v: any) => (v ?? '').toString().replace(/\\n|\n/g, ' ').trim();
+
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-blue-100 to-blue-200">
       <div className="w-full max-w-md">
@@ -68,7 +70,7 @@ export default function ApplicationStatus() {
                 <div>Submitted:</div>
                 <div>{app ? new Date(app.submittedAt).toLocaleString() : '-'}</div>
                 <div>Status:</div>
-                <div className="font-semibold text-amber-500">{app?.status || 'Unknown'}</div>
+                <div className="font-semibold text-amber-500">{sanitize(app?.status) || 'Unknown'}</div>
               </div>
 
               {total > 0 && (

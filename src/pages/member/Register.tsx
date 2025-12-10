@@ -52,8 +52,6 @@ const MemberRegister = () => {
     email: string;
     password: string;
     confirmPassword: string;
-    gender?: string;
-    dob?: string;
   };
 
   type Step2Form = {
@@ -133,8 +131,6 @@ const MemberRegister = () => {
               lastName: partialData.lastName,
               email: partialData.email,
               phone: partialData.mobile,
-              dateOfBirth: partialData.dob,
-              gender: partialData.gender,
               state: data.stateName,
               district: data.districtName,
               block: data.block,
@@ -260,32 +256,7 @@ const MemberRegister = () => {
                       {errorsStep1.email && <p className="text-xs text-red-600 mt-1">{errorsStep1.email.message}</p>}
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="dob">Date of Birth*</Label>
-                        <Input id="dob" type="date" {...registerStep1('dob')} />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="gender">Gender*</Label>
-                        <Controller
-                          control={controlStep1}
-                          name="gender"
-                          render={({ field }) => (
-                            <Select value={field.value || ''} onValueChange={(v: string) => field.onChange(v)}>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select gender" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="male">Male</SelectItem>
-                                <SelectItem value="female">Female</SelectItem>
-                                <SelectItem value="other">Other</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          )}
-                        />
-                        
-                      </div>
-                    </div>
+                    
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">

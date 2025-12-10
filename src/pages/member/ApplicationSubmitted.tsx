@@ -77,47 +77,7 @@ export default function ApplicationSubmitted() {
                   <div className="text-xs sm:text-sm">{app ? new Date(app.submittedAt).toLocaleString() : '-'}</div>
                   <div>Status:</div>
                   <div className="text-xs sm:text-sm text-amber-500 font-semibold">{app?.status || 'Under Review'}</div>
-                </div>
-
-                {total > 0 && (
-                  <div className="mt-3">
-                    <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
-                      <div>{completed} of {total} stages completed</div>
-                      <div>{pct}%</div>
-                    </div>
-
-                    <div className="w-full bg-gray-100 rounded-full h-2">
-                      <div className="h-2 rounded-full bg-blue-600 transition-all" style={{ width: `${pct}%` }} />
-                    </div>
-
-                    <div className="mt-3 grid grid-cols-4 gap-2 text-[10px] sm:text-xs text-muted-foreground items-center">
-                      {app.stages.map((s: any) => (
-                        <div key={s.key} className="flex flex-col items-center">
-                          <div className={`w-3 h-3 rounded-full ${s.status === 'Approved' ? 'bg-green-500' : s.status === 'Under Review' ? 'bg-yellow-400' : 'bg-gray-300'}`} />
-                          <div className="mt-1 text-center">{s.title.split(' ')[0]}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-                {app?.stages?.map((s: any) => (
-                  <div key={s.key} className={`p-3 rounded border ${s.status === 'Approved' ? 'bg-green-50' : s.status === 'Under Review' ? 'bg-yellow-50' : 'bg-gray-50'}`}>
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="min-w-0">
-                        <div className="text-sm font-semibold truncate">{s.title}</div>
-                        <div className="text-xs text-muted-foreground truncate">{s.reviewer}{s.reviewDate ? ` — Review date: ${new Date(s.reviewDate).toLocaleDateString()}` : ''}</div>
-                        {s.notes && <div className="mt-2 text-xs bg-white border rounded p-2 text-muted-foreground break-words">{s.notes}</div>}
-                      </div>
-                      <div className="shrink-0">
-                        <div className={`px-3 py-1 rounded-full text-xs font-semibold ${s.status === 'Approved' ? 'bg-green-600 text-white' : s.status === 'Under Review' ? 'bg-yellow-400 text-black' : 'bg-gray-200 text-gray-600'}`}>{s.status}</div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                </div></div>
 
               <div className="w-full bg-yellow-50 border rounded p-3 mb-4">
                 <div className="font-semibold text-sm">Important Notice</div>
@@ -135,3 +95,4 @@ export default function ApplicationSubmitted() {
     </div>
   );
 }
+

@@ -136,6 +136,14 @@ const MemberDashboard = () => {
 
   const completionPercentage = computeProfileCompletion();
 
+  let business: any = {};
+  try {
+    const businessRaw = localStorage.getItem("userProfileDetails");
+    business = businessRaw ? JSON.parse(businessRaw) : {};
+  } catch (_) {
+    business = {} as any;
+  }
+
   return (
     <div className="min-h-screen flex">
       {/* Sidebar for desktop */}
@@ -204,67 +212,25 @@ const MemberDashboard = () => {
               <CardContent className="p-4 md:p-6">
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold">Complete Your Profile</h3>
-                    <p className="text-sm text-blue-600 mt-1">{completionPercentage}% completed</p>
-                    <p className="text-sm text-muted-foreground mt-2">Unlock all features by completing your profile.</p>
-
-                    <div className="w-full bg-gray-100 rounded-full h-2 mt-4">
-                      <div className="h-2 rounded-full bg-blue-600" style={{ width: `${completionPercentage}%` }} />
+                    <h3 className="text-lg font-semibold">Create Your Business Account</h3>
+                    <div className="mt-2">
+                      <span className="inline-block text-xs font-semibold bg-yellow-100 text-yellow-700 rounded-full px-2 py-0.5">Start setup</span>
                     </div>
-
+                    <p className="text-sm text-muted-foreground mt-2">Set up your business account to unlock team features and payments.</p>
                     <div className="mt-4">
-                      <Button 
-                        className="bg-blue-600 text-white w-full md:w-auto"
-                        onClick={() => navigate("/member/profile")}
-                      >
-                        Complete Profile
+                      <Button className="bg-blue-600 text-white w-full md:w-auto" onClick={() => navigate('/member/business-profile')}>
+                        Create Account
                       </Button>
                     </div>
                   </div>
-
-                  <div className="w-24 h-24 md:w-32 md:h-32 bg-white rounded-lg flex items-center justify-center">
-                    <img src="/assets/placeholder.svg" alt="illustration" className="w-20 h-20 md:w-24 md:h-24" />
+                  <div className="w-24 h-24 md:w-32 md:h-32 bg-blue-50 rounded-lg flex items-center justify-center">
+                    <img src="/assets/placeholder.svg" alt="briefcase" className="w-20 h-20 md:w-24 md:h-24" />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Profile Status Card */}
-            {latestApplication && (
-              <Card className="shadow-medium border-0 w-full mb-6">
-                <CardContent className="p-4 md:p-6">
-                  <div className="flex items-center gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-1">
-                        <h3 className="text-lg font-semibold">Profile Status</h3>
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                          latestApplication.stages?.every((s: any) => s.status === 'Approved') ? 'bg-green-100 text-green-700' :
-                          latestApplication.stages?.some((s: any) => s.status === 'Under Review' || s.status === 'In progress') ? 'bg-yellow-100 text-yellow-700' :
-                          'bg-gray-100 text-gray-700'
-                        }`}>
-                          {latestApplication.stages?.every((s: any) => s.status === 'Approved') ? 'Approved' :
-                           latestApplication.stages?.some((s: any) => s.status === 'Under Review' || s.status === 'In progress') ? 'In review' : 'Pending'}
-                        </span>
-                      </div>
-                      <p className="text-sm text-muted-foreground">Your profile is under review. Tap to see status updates</p>
-                      <div className="mt-3">
-                        <Button
-                          className="bg-blue-600 text-white"
-                          onClick={() => navigate(`/member/application-status?id=${encodeURIComponent(latestApplication.id)}`)}
-                        >
-                          View Status
-                        </Button>
-                      </div>
-                    </div>
-                    <div className="hidden md:block w-28 h-28 bg-blue-50 rounded-lg items-center justify-center md:flex">
-                      <img src="/assets/placeholder.svg" alt="status" className="w-20 h-20" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Membership card and documents after membership */}
+            {/* Profile Status Card */}            {/* Membership card and documents after membership */}
             {latestApplication?.payment?.status === 'Completed' && (
               <>
                 <Card className="w-full mb-6 border-0 shadow-medium bg-gradient-to-r from-purple-600 to-pink-500 text-white">
@@ -302,7 +268,7 @@ const MemberDashboard = () => {
                   <button
                     className="w-full flex items-center justify-between px-4 py-4 rounded-xl bg-green-100 text-green-900"
                     onClick={() => {
-                      const blob = new Blob([`Tax Exemption Certificate\nMember: ${userName || 'Member'}\nMember ID: ${latestApplication.id}\nDate: ${new Date().toLocaleDateString()}`], { type: 'text/plain' });
+                      const blob = new Blob([`Tax Exemption CertificateMember: ${userName || 'Member'}Member ID: ${latestApplication.id}Date: ${new Date().toLocaleDateString()}`], { type: 'text/plain' });
                       const url = URL.createObjectURL(blob);
                       const a = document.createElement('a');
                       a.href = url;
@@ -332,3 +298,5 @@ const MemberDashboard = () => {
 };
 
 export default MemberDashboard;
+
+

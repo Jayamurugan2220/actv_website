@@ -8,6 +8,7 @@ import { FaGoogle, FaFacebook, FaLinkedin } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { authenticateAdmin, setAdminSession } from "@/utils/authService";
+import activLogo from "@/logo_ACTIVian-removebg-preview.png";
 
 export default function EnhancedLoginPage() {
   const [userType, setUserType] = useState<"member" | "admin">("member");
@@ -264,9 +265,9 @@ export default function EnhancedLoginPage() {
         <div className="text-center space-y-2">
           <div className="inline-block p-2 rounded-full bg-blue-100 mb-2">
             <img
-              src="/placeholder.svg"
-              alt="Logo"
-              className="w-12 h-12"
+              src={activLogo}
+              alt="ACTIV logo"
+              className="w-12 h-12 object-contain"
             />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">ACTIV Portal</h1>

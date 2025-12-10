@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FaHome, FaCheckCircle, FaUsers, FaCog, FaSignOutAlt } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,12 @@ type Props = {
 
 export default function AdminSidebar({ className = '' }: Props) {
   const location = useLocation();
-  const navigate = useNavigate();
+  
+
+  const role = (typeof window !== 'undefined' ? localStorage.getItem('role') : '') || '';
+  const userName = (typeof window !== 'undefined' ? localStorage.getItem('userName') : '') || 'Admin';
+  const roleLabel = role === 'block_admin' ? 'Block Admin' : role === 'district_admin' ? 'District Admin' : role === 'state_admin' ? 'State Admin' : role === 'super_admin' ? 'Super Admin' : 'Member';
+  const initials = role === 'block_admin' ? 'BA' : role === 'district_admin' ? 'DA' : role === 'state_admin' ? 'SA' : role === 'super_admin' ? 'SU' : (userName || 'A').split(' ').map(p=>p[0]).join('').slice(0,2).toUpperCase();
 
   const nav = [
     { to: '/admin/dashboard', label: 'Home', icon: <FaHome /> },
@@ -39,11 +44,11 @@ export default function AdminSidebar({ className = '' }: Props) {
       <div className="p-2 md:p-4">
         <div className="hidden md:flex items-center gap-3 mb-4">
           <Avatar className="w-10 h-10 md:w-12 md:h-12">
-            <AvatarFallback className="bg-primary text-primary-foreground">AU</AvatarFallback>
+            <AvatarFallback className="bg-primary text-primary-foreground">{initials}</AvatarFallback>
           </Avatar>
           <div className="hidden lg:block">
-            <div className="font-semibold text-sm md:text-base">Admin User</div>
-            <div className="text-xs md:text-sm text-muted-foreground">Administrator</div>
+            <div className="font-semibold text-sm md:text-base">{userName}</div>
+            <div className="text-xs md:text-sm text-muted-foreground">{roleLabel}</div>
           </div>
         </div>
 
